@@ -1,0 +1,75 @@
+#********************************************************#
+# www.metodosexatos.com                                  #
+# Prof.Ms. André Santos | andre@metodosexatos.com.br     #
+# Curso Análise Bayesiana: Simulação Estocástico com R   #
+# Re-Amostragem por Importância                          #
+# Data: 07/12/2019                                       #
+#********************************************************#
+
+# SIR::Sample Importance Resampling (Re-Amostragem por Importância)
+
+#************************* Exemplo RU 486 **********************************#
+
+# Tamanho da amostra
+n <- 10^5
+
+# Amostra de teta
+set.seed(42)
+teta <- runif(n, 0, 1)
+hist(teta)
+
+# Verossimilhança para cada valor de teta (n = 4 e x = 0)
+ver <- dbinom(0, 4, prob = teta)
+hist(ver)
+
+# Densidade da priori para os valores de teta
+priori <- dunif(teta, 0, 1)
+
+# Função de importância
+imp <- dunif(teta, 0, 1)
+
+# Pesos
+pesos <- (ver*priori)/imp
+
+# Pesos normalizados
+pesos.norm <- pesos/sum(pesos)
+
+# Amostra com reposição
+teta.sir <- sample(teta, size = 1000, replace = TRUE, prob = pesos.norm)
+hist(teta.sir, main = "Re-Amostragem por Importância")
+
+# Resultados
+summary(teta.sir)
+quantile(teta.sir, c(0.025,0.25,0.5,0.75,0.975))
+sd(teta.sir)
+mean(teta.sir)
+
+# Parâmetros
+
+#- opção 1:
+install.packages("fitdistrplus")
+library(fitdistrplus)
+x <- teta.sir # teste: rbeta(95, 3, 10)
+fit1 <- fitdist(x, "beta")
+print(fit1) #shape 1= alfa e shape 2 = beta
+
+qbeta(0.025, alfa, beta)
+qbeta(0.025, 1, 5)
+
+parametros <- coef(fit1)
+parametros
+alfa <- parametros[1]
+beta <- parametros[2]
+
+#- opção 2:
+install.packages("MASS")
+library("MASS")
+fit2 <- fitdistr(x, "beta", start = list(shape1 = 2, shape2 = 9))
+print(fit2)
+
+# ERU
+
+eru <- -sum(pesos.norm*log(pesos.norm))/log(n)
+eru
+
+                          
