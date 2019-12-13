@@ -1,0 +1,42 @@
+#***************************************************************#
+# www.metodosexatos.com                                         #
+# Prof.Ms. André Santos | andre@metodosexatos.com.br            #
+# Curso Análise Bayesiana: Monte Carlo com Cadeias de Markov    #
+# Cadeias de Markov                                             #
+# Data: 09/12/2019                                              #
+#***************************************************************#
+
+# Exemplo - Manejo de Aves (matriz de transição e grafo)
+
+# Pacotes requeridos
+install.packages("diagram")
+library("diagram")
+
+# Matriz de transição
+nomes <- c("Ilha 1","Ilha 2","Ilha 3", "Ilha 4")
+byrow <- TRUE
+M <- matrix(data = c(0.5, 0.3, 0.2, 0.0,
+                     0.2, 0.4, 0.3, 0.1,
+                     0.1, 0.1, 0.6, 0.2,
+                     0.1, 0.2, 0.3, 0.4), byrow = byrow, nrow = 4,
+                          dimnames = list(nomes, nomes))
+M
+
+# Diagrama
+plotmat(
+  A = M, 
+  pos = c(1, 2, 1), 
+  lwd = 1, 
+  box.lwd = 2, 
+  cex.txt = 0.8, 
+  box.size = 0.1, 
+  box.type = "circle", 
+  box.prop = 0.5,
+  box.col = "light yellow",
+  arr.length = 0.1,
+  arr.width = 0.1,
+  self.cex = 0.4,
+  self.shifty = -0.01,
+  self.shiftx = 0.13,
+  main = "Manejo de Aves"
+)
